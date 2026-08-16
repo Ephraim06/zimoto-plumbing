@@ -31,6 +31,33 @@ document.addEventListener("DOMContentLoaded", () => {
   navigation?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
   window.addEventListener("resize", () => { if (window.innerWidth > 980) closeMenu(); });
 
+  const whatsappFloat = document.querySelector(".whatsapp-float");
+  const whatsappButton = whatsappFloat?.querySelector(".floating-whatsapp");
+  const whatsappMenu = whatsappFloat?.querySelector(".whatsapp-menu");
+
+  const closeWhatsappMenu = () => {
+    if (!whatsappMenu || !whatsappButton) return;
+    whatsappMenu.hidden = true;
+    whatsappButton.setAttribute("aria-expanded", "false");
+  };
+
+  whatsappButton?.addEventListener("click", () => {
+    const willOpen = whatsappMenu.hidden;
+    whatsappMenu.hidden = !willOpen;
+    whatsappButton.setAttribute("aria-expanded", String(willOpen));
+  });
+
+  whatsappMenu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeWhatsappMenu));
+  document.addEventListener("click", (event) => {
+    if (whatsappFloat && !whatsappFloat.contains(event.target)) closeWhatsappMenu();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeWhatsappMenu();
+      whatsappButton?.focus();
+    }
+  });
+
   const filterButtons = document.querySelectorAll("[data-filter]");
   const serviceCards = document.querySelectorAll("[data-category]");
   filterButtons.forEach((button) => {
@@ -120,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
       status.textContent = "Thank you. Your request has been sent to Zimoto Plumbing.";
     } catch (error) {
       status.classList.add("error");
-      status.textContent = "We could not send your request. Please try again or WhatsApp us on +27 81 761 8312.";
+      status.textContent = "We could not send your request. Please try again or use the WhatsApp button to contact Macdonald or Macmillan.";
     } finally {
       submitButton.disabled = false;
       buttonLabel.textContent = "Send quote request";
